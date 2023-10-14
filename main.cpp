@@ -5,8 +5,6 @@
 
 int main()
 {
-    const int WIDTH = 10, HEIGHT = 10;
-
     sf::Time t;
     Player* player = new Player(100, 100, 20);
     player->init(sf::Color::Yellow);
