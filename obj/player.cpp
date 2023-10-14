@@ -1,0 +1,25 @@
+#include "player.h"
+
+Player::Player(int x, int y, int t_size) : AbstractRenderer(sf::Triangles, 6, true), x(x), y(y), t_size(t_size)
+{
+}
+
+Player::~Player()
+{
+}
+
+void Player::init(sf::Color color)
+{
+    for (size_t i = 0; i < va.getVertexCount(); i++)
+        va[i].color = color;
+}
+
+void Player::tick(sf::Time delta_time)
+{
+    va[0].position = sf::Vector2f(x, y);
+    va[1].position = sf::Vector2f(x + t_size, y);
+    va[2].position = sf::Vector2f(x, y + t_size);
+    va[3].position = sf::Vector2f(x, y + t_size);
+    va[4].position = sf::Vector2f(x + t_size, y);
+    va[5].position = sf::Vector2f(x + t_size, y + t_size);
+}
