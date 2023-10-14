@@ -3,6 +3,10 @@
 
 #include "../base/abstract_renderer.h"
 
+/*
+    Generic player class to add more interaction to the project
+*/
+
 class Player: public AbstractRenderer
 {
 private:

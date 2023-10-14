@@ -4,7 +4,8 @@
 #include <SFML/Graphics.hpp>
 
 /*
-    Handles all rendering stuff to the screen
+    Abstract class to handle all basic rendering stuff. Will be inherited by all classes that are
+    supposed to draw stuff to the screen
 */
 
 class AbstractRenderer
