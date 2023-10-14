@@ -7,16 +7,14 @@
     Generic player class to add more interaction to the project
 */
 
-class Player: public AbstractRenderer
+class player: public abstract_renderer
 {
 private:
-    int x, y;
+    float x, y;
     int t_size;
 
 public:
-    Player(int x, int y, int t_size);
-    ~Player();
-    void init(sf::Color color) override;
+    player(float x, float y, int t_size);
     void tick(sf::Time delta_time);
 };
 

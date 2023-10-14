@@ -8,7 +8,7 @@
     supposed to draw stuff to the screen
 */
 
-class AbstractRenderer
+class abstract_renderer
 {
 protected:
     //holds the vertex data
@@ -17,11 +17,13 @@ protected:
     bool active;
 
 public:
-    AbstractRenderer(sf::PrimitiveType type, size_t array_size, bool active);
+    abstract_renderer(sf::PrimitiveType type, size_t array_size, bool active);
+    virtual ~abstract_renderer();
     //the initialisation should be handled by each different object type
-    virtual void init(sf::Color color) = 0;
+    virtual void init(sf::Color color);
     //handles rendering. Normally, the vertex array is simply rendered
     virtual void render(sf::RenderWindow *window);
+    void setActive(bool active);
 };
 
 #endif
