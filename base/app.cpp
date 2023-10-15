@@ -24,6 +24,8 @@ void app::events()
     {
         if (event.type == sf::Event::Closed)
             window->close();
+
+        g.modify_grid(event, get_mouse_pos());
     }
 }
 
@@ -44,6 +46,7 @@ void app::render()
 
     g.render(window);
     p.render(window);
+    window->draw(g.selected_tile);
     
     window->display();
 }

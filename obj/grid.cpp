@@ -1,12 +1,20 @@
 #include "grid.h"
 
-sf::Vector2i selected_tile = sf::Vector2i(-1, -1);
-
 grid::grid(int tile_size) : abstract_renderer(sf::Triangles, 6, true), tile_size(tile_size)
 {
     int amount = WINDOW_SIZE / tile_size;
 
     va.resize(amount * amount * va.getVertexCount());
+
+    //hover initialisation and color setting
+    selected_tile = sf::VertexArray(sf::Triangles, 6);
+
+    selected_tile[0].color = sf::Color(200, 200, 200, 100);
+    selected_tile[1].color = sf::Color(200, 200, 200, 100);
+    selected_tile[2].color = sf::Color(200, 200, 200, 100);
+    selected_tile[3].color = sf::Color(200, 200, 200, 100);
+    selected_tile[4].color = sf::Color(200, 200, 200, 100);
+    selected_tile[5].color = sf::Color(200, 200, 200, 100);
 
     // generates an empty map (marked by 0 values)
     map = new int *[amount];
@@ -61,19 +69,19 @@ sf::Vertex *grid::get_tile_at_pos(sf::Vector2i pos)
 
 bool grid::set_tile_at_pos(sf::Vector2i pos, int new_type, int clamped)
 {
-    //error checking
+    // error checking
     if (pos.x < 0 || pos.x >= WINDOW_SIZE)
         return false;
 
     if (pos.y < 0 || pos.y >= WINDOW_SIZE)
         return false;
 
-    if(clamped && (pos.x >= WINDOW_SIZE / tile_size || pos.y >= WINDOW_SIZE / tile_size))
+    if (clamped && (pos.x >= WINDOW_SIZE / tile_size || pos.y >= WINDOW_SIZE / tile_size))
         return false;
 
     int amount = WINDOW_SIZE / tile_size;
 
-    //if clamped, the position is considered to be a valid tile map position
+    // if clamped, the position is considered to be a valid tile map position
     if (clamped)
     {
         // sets color based on type
@@ -84,28 +92,21 @@ bool grid::set_tile_at_pos(sf::Vector2i pos, int new_type, int clamped)
             for (int i = 0; i < 6; i++)
                 v[i].color = EMPTY_TILE_COLOR;
         }
-        else if(new_type == 1)
+        else
         {
             sf::Vertex *v = &va[(pos.x + pos.y * amount) * 6];
 
             for (int i = 0; i < 6; i++)
                 v[i].color = FULL_TILE_COLOR;
         }
-        else
-        {
-            sf::Vertex *v = &va[(pos.x + pos.y * amount) * 6];
-
-            for (int i = 0; i < 6; i++)
-                v[i].color = HIGHLIGHTED_TILE_COLOR;
-        }
 
         return true;
     }
 
-    //gets the given tile map location based on the input location
+    // gets the given tile map location based on the input location
     int map_x = pos.x / tile_size;
     int map_y = pos.y / tile_size;
-    
+
     map[map_x][map_y] = new_type;
 
     // sets color based on type
@@ -129,18 +130,37 @@ bool grid::set_tile_at_pos(sf::Vector2i pos, int new_type, int clamped)
 
 void grid::tick(sf::Vector2i mouse_pos)
 {
-    //highlightes the tile hovered by the mouse
-    sf::Vector2i mouse_map_pos = sf::Vector2i(mouse_pos.x / tile_size, mouse_pos.y / tile_size);
+    //sets the position of the hover to the tile the mouse is over
+    sf::Vector2f mouse_map_pos = sf::Vector2f(mouse_pos.x / tile_size, mouse_pos.y / tile_size);
 
-    //sets the first position of the highlighted tile
-    if (selected_tile.x == -1 && selected_tile.y == -1)
-        if(set_tile_at_pos(mouse_map_pos, 2, 1))
-            selected_tile = mouse_map_pos;
+    mouse_map_pos.x *= tile_size;
+    mouse_map_pos.y *= tile_size;
 
-    if (selected_tile != mouse_map_pos)
-    {
-        set_tile_at_pos(selected_tile, 0, 1);
-        selected_tile = mouse_map_pos;
-        set_tile_at_pos(selected_tile, 2, 1);
-    }
+    selected_tile[0].position = sf::Vector2f(mouse_map_pos.x, mouse_map_pos.y);
+    selected_tile[1].position = sf::Vector2f(mouse_map_pos.x + tile_size, mouse_map_pos.y);
+    selected_tile[2].position = sf::Vector2f(mouse_map_pos.x, mouse_map_pos.y + tile_size);
+    selected_tile[3].position = sf::Vector2f(mouse_map_pos.x, mouse_map_pos.y + tile_size);
+    selected_tile[4].position = sf::Vector2f(mouse_map_pos.x + tile_size, mouse_map_pos.y);
+    selected_tile[5].position = sf::Vector2f(mouse_map_pos.x + tile_size, mouse_map_pos.y + tile_size);
+}
+
+bool add = false;
+bool del = false;
+
+void grid::modify_grid(sf::Event event, sf::Vector2i mouse_pos)
+{
+    if (event.mouseButton.button == sf::Mouse::Left && event.type == sf::Event::MouseButtonPressed)
+        add = true;
+    else if(event.mouseButton.button == sf::Mouse::Left && event.type == sf::Event::MouseButtonReleased)
+        add = false;
+
+    if (event.mouseButton.button == sf::Mouse::Right && event.type == sf::Event::MouseButtonPressed)
+        del = true;
+    else if(event.mouseButton.button == sf::Mouse::Right && event.type == sf::Event::MouseButtonReleased)
+        del = false;
+
+    if(add)
+        set_tile_at_pos(mouse_pos, 1, 0);
+    if(del)
+        set_tile_at_pos(mouse_pos, 0, 0);
 }
