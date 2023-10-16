@@ -23,7 +23,7 @@ public:
     virtual void init(sf::Color color);
     //handles rendering. Normally, the vertex array is simply rendered
     virtual void render(sf::RenderWindow *window);
-    void setActive(bool active);
+    void set_active(bool active);
 };
 
 #endif

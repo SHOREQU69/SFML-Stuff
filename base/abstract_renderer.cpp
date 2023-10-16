@@ -22,7 +22,7 @@ void abstract_renderer::render(sf::RenderWindow* window)
     window->draw(va);
 }
 
-void abstract_renderer::setActive(bool active)
+void abstract_renderer::set_active(bool active)
 {
     this->active = active;
 }
